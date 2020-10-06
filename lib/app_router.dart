@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:manguha/pages/details.dart';
+import 'package:manguha/pages/details/page_details.dart';
 
 class AppRouter {
   static const splash = "/";

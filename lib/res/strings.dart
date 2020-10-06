@@ -11,4 +11,10 @@ class AppStrings {
   static const archive = "Архив";
   static const trash = "Корзина";
   static const support = "Справка/Отзыв";
+
+  //BottomSheet
+  static const delete = "Удалить";
+  static const share = "Отправить";
+  static const download = "Скачать на устройство";
+  static const copy = "Создать копию";
 }

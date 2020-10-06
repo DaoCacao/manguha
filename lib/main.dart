@@ -6,7 +6,7 @@ import 'package:manguha/blocs/note/note_bloc.dart';
 import 'package:manguha/blocs/pinned_notes/pinned_notes_bloc.dart';
 import 'package:manguha/data/database.dart';
 import 'package:manguha/data/note_repository.dart';
-import 'package:manguha/pages/details.dart';
+import 'package:manguha/pages/details/page_details.dart';
 import 'package:manguha/pages/menu.dart';
 import 'package:manguha/pages/splash.dart';
 import 'package:manguha/res/colors.dart';

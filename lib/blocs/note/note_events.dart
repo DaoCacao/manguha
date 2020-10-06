@@ -21,3 +21,5 @@ class ChangeNoteContent extends NoteEvent {
 class SaveNote extends NoteEvent {}
 
 class PinNote extends NoteEvent {}
+
+class DeleteNote extends NoteEvent {}

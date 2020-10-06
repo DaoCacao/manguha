@@ -32,6 +32,8 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
       yield* mapSaveNote(event);
     } else if (event is PinNote) {
       yield* mapPinNote(event);
+    } else if (event is DeleteNote) {
+      yield* mapDeleteNote(event);
     }
   }
 
@@ -66,5 +68,11 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   Stream<NoteState> mapPinNote(PinNote event) async* {
     _note..isPinned = !_note.isPinned;
     isEdited = true;
+  }
+
+  Stream<NoteState> mapDeleteNote(DeleteNote event) async* {
+    _note..isDeleted = true;
+    isEdited = true;
+    yield NoteDeleted();
   }
 }

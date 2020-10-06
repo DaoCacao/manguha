@@ -10,16 +10,22 @@ class NoteDatabase {
   }).then(
     (path) => openDatabase(
       join(path, 'notes_database.db'),
-      version: 1,
+      version: 2,
       onCreate: (db, version) {
         return db.execute(
           "CREATE TABLE ${Note.TABLE_NAME}("
           "${Note.ID} INTEGER PRIMARY KEY AUTOINCREMENT, "
           "${Note.TITLE} TEXT, "
           "${Note.CONTENT} TEXT, "
-          "${Note.IS_PINNED} BOOLEAN, "
           "${Note.LAST_UPDATE} INTEGER)",
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) {
+        switch (newVersion) {
+          case 2:
+            db.execute("ALTER TABLE ${Note.TABLE_NAME} ADD COLUMN ${Note.IS_PINNED} BOOLEAN");
+            db.execute("ALTER TABLE ${Note.TABLE_NAME} ADD COLUMN ${Note.IS_DELETED} BOOLEAN");
+        }
       },
     ),
   );
@@ -28,6 +34,7 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
+              where: "NOT(${Note.IS_DELETED})",
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
         .then((notes) => notes.map((map) => Note.fromMap(map)).toList());
@@ -37,7 +44,7 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where: "${Note.TITLE} LIKE ?",
+              where: "NOT(${Note.IS_DELETED}) AND ${Note.TITLE} LIKE ?",
               whereArgs: ['%$query%'],
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
@@ -48,7 +55,7 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where: Note.IS_PINNED,
+              where: "NOT(${Note.IS_DELETED}) AND ${Note.IS_PINNED}",
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
         .then((notes) => notes.map((map) => Note.fromMap(map)).toList());
@@ -58,7 +65,7 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where: "${Note.IS_PINNED} AND ${Note.TITLE} LIKE ?",
+              where: "NOT(${Note.IS_DELETED}) ${Note.IS_PINNED} AND ${Note.TITLE} LIKE ?",
               whereArgs: ['%$query%'],
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))

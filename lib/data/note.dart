@@ -4,12 +4,14 @@ class Note {
   static const TITLE = "title";
   static const CONTENT = "content";
   static const IS_PINNED = "is_pinned";
+  static const IS_DELETED = "is_deleted";
   static const LAST_UPDATE = "lastUpdate";
 
   final int id;
   String title;
   String content;
   bool isPinned;
+  bool isDeleted;
   DateTime lastUpdate;
 
   //TODO parse by datetimeformat
@@ -17,9 +19,24 @@ class Note {
 
   String get hm => "${lastUpdate.hour}:${lastUpdate.minute}";
 
-  Note._(this.id, this.title, this.content, this.isPinned, this.lastUpdate);
+  Note._(
+    this.id,
+    this.title,
+    this.content,
+    this.isPinned,
+    this.isDeleted,
+    this.lastUpdate,
+  );
 
-  Note.create() : this._(null, "", "", false, DateTime.now());
+  Note.create()
+      : this._(
+          null,
+          "",
+          "",
+          false,
+          false,
+          DateTime.now(),
+        );
 
   Map<String, dynamic> toMap() {
     return {
@@ -27,6 +44,7 @@ class Note {
       TITLE: title,
       CONTENT: content,
       IS_PINNED: isPinned,
+      IS_DELETED: isDeleted,
       LAST_UPDATE: lastUpdate.millisecondsSinceEpoch,
     };
   }
@@ -37,6 +55,7 @@ class Note {
       map[TITLE] as String,
       map[CONTENT] as String,
       map[IS_PINNED] as int == 1,
+      map[IS_DELETED] as int == 1,
       DateTime.fromMillisecondsSinceEpoch(map[LAST_UPDATE]),
     );
   }
