@@ -64,7 +64,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   }
 
   Stream<NoteState> mapPinNote(PinNote event) async* {
-    _note..isPinned = true;
+    _note..isPinned = !_note.isPinned;
     isEdited = true;
   }
 }

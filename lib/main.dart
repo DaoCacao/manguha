@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (c) => PinnedNotesBloc(c.repository())),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             accentColor: AppColors.fab,
             visualDensity: VisualDensity.adaptivePlatformDensity,
