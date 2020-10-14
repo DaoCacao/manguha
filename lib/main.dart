@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manguha/app_router.dart';
-import 'package:manguha/blocs/menu_bloc.dart';
+import 'package:manguha/blocs/menu/menu_bloc.dart';
 import 'package:manguha/blocs/note/note_bloc.dart';
 import 'package:manguha/blocs/pinned_notes/pinned_notes_bloc.dart';
 import 'package:manguha/data/database.dart';
@@ -11,8 +11,9 @@ import 'package:manguha/pages/menu.dart';
 import 'package:manguha/pages/splash.dart';
 import 'package:manguha/res/colors.dart';
 
-import 'bloc_observer.dart';
+import 'blocs/bloc_observer.dart';
 import 'blocs/all_notes/all_notes_bloc.dart';
+import 'blocs/search_cubit.dart';
 
 void main() {
   Bloc.observer = AppBlocObserver();
@@ -36,13 +37,19 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            accentColor: AppColors.fab,
+            scaffoldBackgroundColor: AppColors.background,
+            primaryColor: AppColors.primary,
+            accentColor: AppColors.accent,
+            bottomAppBarColor: AppColors.primary,
             visualDensity: VisualDensity.adaptivePlatformDensity,
             fontFamily: 'Comfortaa',
           ),
           routes: {
             AppRouter.splash: (_) => SplashPage(),
-            AppRouter.main: (_) => MenuPage(),
+            AppRouter.main: (_) => BlocProvider(
+                  create: (c) => SearchCubit(c.bloc(), c.bloc()),
+                  child: MenuPage(),
+                ),
             AppRouter.create: (_) => BlocProvider(
                   create: (c) => NoteBloc(c.repository(), c.bloc(), c.bloc()),
                   child: DetailsPage.create(),

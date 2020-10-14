@@ -1,4 +1,6 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:manguha/blocs/all_notes/all_notes_bloc.dart';
 import 'package:manguha/blocs/all_notes/all_notes_events.dart';
 import 'package:manguha/blocs/pinned_notes/pinned_notes_bloc.dart';
@@ -14,7 +16,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   final AllNotesBloc _allNotesBloc;
   final PinnedNotesBloc _pinnedNotesBloc;
 
-  Note _note;
+  Note note;
   bool isEdited = false;
 
   NoteBloc(this._notes, this._allNotesBloc, this._pinnedNotesBloc)
@@ -32,47 +34,87 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
       yield* mapSaveNote(event);
     } else if (event is PinNote) {
       yield* mapPinNote(event);
+    } else if (event is ArchiveNote) {
+      yield* mapArchiveNote(event);
     } else if (event is DeleteNote) {
       yield* mapDeleteNote(event);
+    } else if (event is CopyNote) {
+      yield* mapCopyNote(event);
+    } else if (event is AddNoteImage) {
+      yield* mapAddImage(event);
     }
   }
 
   Stream<NoteState> mapLoadNote(LoadNote event) async* {
     yield NoteLoading();
-    _note = event.id == null ? Note.create() : await _notes.get(event.id);
-    yield NoteLoaded(_note);
+    note = event.id == null ? Note.create() : await _notes.get(event.id);
+    yield NoteLoaded(note, event.id == null);
   }
 
   Stream<NoteState> mapChangeNoteTitle(ChangeNoteTitle event) async* {
-    _note
+    note
       ..title = event.text
       ..lastUpdate = DateTime.now();
     isEdited = true;
   }
 
   Stream<NoteState> mapChangeNoteContent(ChangeNoteContent event) async* {
-    _note
+    note
       ..content = event.text
       ..lastUpdate = DateTime.now();
     isEdited = true;
   }
 
   Stream<NoteState> mapSaveNote(SaveNote event) async* {
-    if (_note != null && isEdited) {
-      await _notes.save(_note);
+    if (note != null && isEdited) {
+      await _notes.save(note);
       _allNotesBloc.add(LoadAllNotes());
       _pinnedNotesBloc.add(LoadPinnedNotes());
     }
   }
 
   Stream<NoteState> mapPinNote(PinNote event) async* {
-    _note..isPinned = !_note.isPinned;
+    note
+      ..isPinned = !note.isPinned
+      ..lastUpdate = DateTime.now();
     isEdited = true;
   }
 
-  Stream<NoteState> mapDeleteNote(DeleteNote event) async* {
-    _note..isDeleted = true;
+  Stream<NoteState> mapArchiveNote(ArchiveNote event) async* {
+    note
+      ..isDeleted = true
+      ..lastUpdate = DateTime.now();
     isEdited = true;
     yield NoteDeleted();
+  }
+
+  Stream<NoteState> mapDeleteNote(DeleteNote event) async* {
+    note
+      ..isDeleted = true
+      ..lastUpdate = DateTime.now();
+    isEdited = true;
+    yield NoteDeleted();
+  }
+
+  Stream<NoteState> mapCopyNote(CopyNote event) async* {
+    Clipboard.setData(ClipboardData(text: note.title + "\n" + note.content));
+    yield NoteCopied();
+  }
+
+  Stream<NoteState> mapAddImage(AddNoteImage event) async* {
+    final bytes = await ImagePicker()
+        .getImage(source: event.source)
+        .then((image) => image.readAsBytes())
+        .catchError((e) => null); //TODO check if denied
+
+    if (bytes == null) {
+      yield ImageAddedError();
+    } else {
+      note
+        ..image = bytes
+        ..lastUpdate = DateTime.now();
+      isEdited = true;
+      yield ImageAdded(bytes);
+    }
   }
 }

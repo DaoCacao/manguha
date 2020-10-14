@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const fab = Color.fromRGBO(251, 184, 158, 1);
-  static const primary = Color.fromRGBO(251, 224, 158, 1);
-  static const primary_light = Color.fromRGBO(250, 245, 232, 1);
-  static const brown = Color.fromRGBO(122, 90, 77, 1);
-  static const circle1 = Color.fromRGBO(251, 238, 233, 1);
-  static const circle2 = Color.fromRGBO(247, 177, 108, 1);
+  static const background = Color(0xffFFE2E2);
+  static const primary = Color(0xffC88C9E);
+  static const textSecondary = Color(0xffFED7DE);
+  static const textPrimary = Color(0xff410917);
+  static const icon = Color(0xff410917);
+  static const accent = Color(0xffF40F6F);
+  static const white = Color(0xffffffff);
+
+  static const gradientSplash = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      AppColors.textSecondary,
+      AppColors.primary,
+    ],
+  );
+
+  static const gradientCard = LinearGradient(
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    colors: [
+      AppColors.white,
+      AppColors.background,
+    ],
+  );
 }

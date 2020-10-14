@@ -20,25 +20,16 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.fab,
-              AppColors.circle2,
-            ],
-          ),
-        ),
+        decoration: BoxDecoration(gradient: AppColors.gradientSplash),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               //TODO trouble with svg, no shadow
-              SvgPicture.asset(AppImages.logo),
+              Image.asset(AppImages.logo),
               SizedBox(height: 16),
               //TODO no shadow
-              SvgPicture.asset(AppImages.logo_name),
+              Image.asset(AppImages.name),
             ],
           ),
         ),

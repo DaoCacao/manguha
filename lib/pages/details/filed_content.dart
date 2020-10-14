@@ -14,13 +14,13 @@ class ContentField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: TextEditingController(text: content),
-      onChanged: (text) =>
-          context.bloc<NoteBloc>().add(ChangeNoteContent(text)),
-      style: TextStyle(fontSize: 12, color: AppColors.brown),
+      onChanged: (text) => context.bloc<NoteBloc>().add(ChangeNoteContent(text)),
+      style: TextStyle(fontSize: 12, color: AppColors.textPrimary),
       textCapitalization: TextCapitalization.sentences,
       keyboardType: TextInputType.multiline,
       maxLines: null,
       decoration: InputDecoration(
+        hintStyle: TextStyle(color: AppColors.primary),
         hintText: AppStrings.noteContent,
         border: InputBorder.none,
         focusedBorder: InputBorder.none,

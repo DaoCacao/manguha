@@ -15,9 +15,10 @@ class TitleField extends StatelessWidget {
     return TextField(
       controller: TextEditingController(text: title),
       onChanged: (text) => context.bloc<NoteBloc>().add(ChangeNoteTitle(text)),
-      style: TextStyle(fontSize: 18, color: AppColors.brown),
+      style: TextStyle(fontSize: 18, color: AppColors.textPrimary),
       textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(
+        hintStyle: TextStyle(color: AppColors.primary),
         hintText: AppStrings.noteTitle,
         border: InputBorder.none,
         focusedBorder: InputBorder.none,

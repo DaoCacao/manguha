@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 class Note {
   static const TABLE_NAME = "notes";
   static const ID = "id";
@@ -5,6 +7,8 @@ class Note {
   static const CONTENT = "content";
   static const IS_PINNED = "is_pinned";
   static const IS_DELETED = "is_deleted";
+  static const IS_ARCHIVED = "is_archived";
+  static const IMAGE = "image";
   static const LAST_UPDATE = "lastUpdate";
 
   final int id;
@@ -12,12 +16,9 @@ class Note {
   String content;
   bool isPinned;
   bool isDeleted;
+  bool isArchived;
+  Uint8List image;
   DateTime lastUpdate;
-
-  //TODO parse by datetimeformat
-  String get dmy => "${lastUpdate.day}.${lastUpdate.month}.${lastUpdate.year}";
-
-  String get hm => "${lastUpdate.hour}:${lastUpdate.minute}";
 
   Note._(
     this.id,
@@ -25,6 +26,8 @@ class Note {
     this.content,
     this.isPinned,
     this.isDeleted,
+    this.isArchived,
+    this.image,
     this.lastUpdate,
   );
 
@@ -35,6 +38,8 @@ class Note {
           "",
           false,
           false,
+          false,
+          Uint8List(0),
           DateTime.now(),
         );
 
@@ -45,6 +50,8 @@ class Note {
       CONTENT: content,
       IS_PINNED: isPinned,
       IS_DELETED: isDeleted,
+      IS_ARCHIVED: isArchived,
+      IMAGE: image,
       LAST_UPDATE: lastUpdate.millisecondsSinceEpoch,
     };
   }
@@ -56,6 +63,8 @@ class Note {
       map[CONTENT] as String,
       map[IS_PINNED] as int == 1,
       map[IS_DELETED] as int == 1,
+      map[IS_ARCHIVED] as int == 1,
+      map[IMAGE] as Uint8List,
       DateTime.fromMillisecondsSinceEpoch(map[LAST_UPDATE]),
     );
   }

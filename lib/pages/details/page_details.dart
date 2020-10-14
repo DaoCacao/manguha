@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:manguha/blocs/note/note_bloc.dart';
 import 'package:manguha/blocs/note/note_events.dart';
 import 'package:manguha/blocs/note/note_states.dart';
 import 'package:manguha/data/note.dart';
-import 'package:manguha/pages/details/bottom_sheet_more.dart';
 import 'package:manguha/res/colors.dart';
-import 'package:manguha/res/images.dart';
 import 'package:manguha/res/strings.dart';
-import 'package:manguha/widgets/loading.dart';
+import 'package:manguha/widgets/bottom_sheet/bottom_sheet_more.dart';
+import 'package:manguha/widgets/placeholders/loading.dart';
 
 import 'filed_content.dart';
 import 'filed_title.dart';
@@ -39,9 +38,14 @@ class DetailsPage extends StatelessWidget {
       child: Scaffold(
         appBar: appBar(context),
         body: BlocConsumer<NoteBloc, NoteState>(
+          listenWhen: (previous, current) =>
+              current is ImageAddedError || current is NoteCopied,
           listener: (context, state) {
-            if (state is NoteDeleted) Navigator.maybePop(context);
+            if (state is ImageAddedError) showSnackbar(context, AppStrings.addImageError);
+            if (state is NoteCopied) showSnackbar(context, AppStrings.copied);
           },
+          buildWhen: (previous, current) =>
+              current is NoteLoading || current is NoteLoaded,
           builder: (context, state) {
             if (state is NoteInitial)
               context.bloc<NoteBloc>().add(LoadNote(_id));
@@ -56,72 +60,61 @@ class DetailsPage extends StatelessWidget {
 
   Widget appBar(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.primary_light,
+      centerTitle: true,
+      title: BlocBuilder<NoteBloc, NoteState>(
+        buildWhen: (previous, current) => current is NoteLoaded,
+        builder: (context, state) {
+          return state is NoteLoaded
+              ? Text(
+                  state.isNew ? AppStrings.titleCreate : AppStrings.titleEdit)
+              : SizedBox.shrink();
+        },
+      ),
       leading: iconBack(context),
-      actions: [iconPin(context)],
     );
   }
 
   Widget iconBack(BuildContext context) {
     return IconButton(
-      icon: SvgPicture.asset(AppImages.back),
+      icon: Icon(Icons.arrow_back),
       onPressed: () => Navigator.maybePop(context),
     );
   }
 
-  Widget iconPin(BuildContext context) {
-    return IconButton(
-      icon: SvgPicture.asset(AppImages.pin),
-      onPressed: () => context.bloc<NoteBloc>().add(PinNote()),
-    );
-  }
-
   Widget bottomAppBar(BuildContext context) {
+    final margin = MediaQuery.of(context).viewInsets.bottom;
     return BottomAppBar(
-      color: AppColors.primary_light,
       child: Container(
-        height: 44, //TODO why 44?
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              // iconExtra(),
-              textUpdateAt(),
-              iconMore(context),
-            ],
-          ),
+        margin: EdgeInsets.only(bottom: margin),
+        height: 44,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(width: 24),
+            textUpdateAt(),
+            iconMore(context),
+          ],
         ),
       ),
     );
-  }
-
-  Widget iconExtra() {
-    return IconButton(
-        icon: Icon(
-          Icons.add_box,
-          color: AppColors.brown,
-        ),
-        onPressed: () {
-          //TODO add extra
-        });
   }
 
   Widget textUpdateAt() {
     return Expanded(
       child: Center(
         child: BlocBuilder<NoteBloc, NoteState>(
+          buildWhen: (previous, current) => current is NoteLoaded,
           builder: (context, state) {
             if (state is NoteLoaded) {
-              final isMoreThenDay =
-                  DateTime.now().difference(state.note.lastUpdate).inDays > 0;
-              final lastUpdate = isMoreThenDay ? state.note.dmy : state.note.hm;
+              final date = state.note.lastUpdate;
+              final dmy = "${date.day}.${date.month}.${date.year}";
+              final hm = "${date.hour}:${date.minute}";
+              final isMoreThenDay = DateTime.now().difference(date).inDays > 0;
+              final lastUpdate = isMoreThenDay ? dmy : hm;
               return Text(
                 "${AppStrings.lastUpdate} $lastUpdate",
-                style: TextStyle(
-                  fontSize: 12,
-                  //TODO color with 0.7 opacity?
-                  color: Color.fromRGBO(122, 90, 77, 0.7),
-                ),
+                style: TextStyle(color: AppColors.white, fontSize: 12),
               );
             }
             return SizedBox.expand();
@@ -134,11 +127,15 @@ class DetailsPage extends StatelessWidget {
   Widget iconMore(BuildContext context) {
     final bloc = context.bloc<NoteBloc>();
     return IconButton(
-        icon: Icon(Icons.more_vert, color: AppColors.brown),
+        icon: Icon(Icons.more_vert, color: AppColors.white),
         onPressed: () {
           showModalBottomSheet(
             context: context,
-            builder: (context) => MoreBottomSheet(bloc),
+            builder: (context) => MoreBottomSheet(
+              onGalleryClick: () => bloc.add(AddNoteImage(ImageSource.gallery)),
+              onCameraClick: () => bloc.add(AddNoteImage(ImageSource.camera)),
+              onCopyClick: () => bloc.add(CopyNote()),
+            ),
           );
         });
   }
@@ -146,15 +143,33 @@ class DetailsPage extends StatelessWidget {
   Widget content(Note note) {
     return ListView(
       children: [
+        BlocBuilder<NoteBloc, NoteState>(
+          buildWhen: (previous, current) => current is ImageAdded,
+          builder: (context, state) => Image.memory(note.image),
+        ),
+        SizedBox(height: 16),
         Padding(
-          padding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
+          padding: EdgeInsets.symmetric(horizontal: 24),
           child: TitleField(title: note.title),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: ContentField(content: note.content),
         ),
       ],
+    );
+  }
+
+  void showSnackbar(BuildContext context, String text) {
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 0),
+        margin: EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        content: Text(text, textAlign: TextAlign.center),
+      ),
     );
   }
 }

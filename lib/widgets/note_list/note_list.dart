@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:manguha/data/note.dart';
-import 'package:manguha/widgets/note_item.dart';
+import 'package:manguha/widgets/note_list/note_item.dart';
 
 class NoteListView extends StatelessWidget {
   final List<Note> notes;
@@ -9,16 +9,12 @@ class NoteListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
+      padding: EdgeInsets.symmetric(vertical: 16),
       itemCount: notes.length,
+      separatorBuilder: (context, i) => SizedBox(height: 16),
       itemBuilder: (context, i) => Padding(
-        //TODO why 28?
-        padding: EdgeInsets.fromLTRB(
-          28,
-          i == 0 ? 16 : 8,
-          28,
-          i == notes.length - 1 ? 16 : 8,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 24),
         child: NoteListItem(note: notes[i]),
       ),
     );

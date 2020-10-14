@@ -5,27 +5,24 @@ import 'package:sqflite/sqflite.dart';
 class NoteDatabase {
   //TODO --> add migration
   final Future<Database> database = getDatabasesPath().then((path) {
-    print("DB path% $path");
+    print("db path $path");
     return path;
   }).then(
     (path) => openDatabase(
       join(path, 'notes_database.db'),
-      version: 2,
+      version: 1,
       onCreate: (db, version) {
-        return db.execute(
+        db.execute(
           "CREATE TABLE ${Note.TABLE_NAME}("
           "${Note.ID} INTEGER PRIMARY KEY AUTOINCREMENT, "
           "${Note.TITLE} TEXT, "
           "${Note.CONTENT} TEXT, "
+          "${Note.IS_PINNED} BOOLEAN, "
+          "${Note.IS_DELETED} BOOLEAN, "
+          "${Note.IS_ARCHIVED} BOOLEAN, "
+          "${Note.IMAGE} BLOB, "
           "${Note.LAST_UPDATE} INTEGER)",
         );
-      },
-      onUpgrade: (db, oldVersion, newVersion) {
-        switch (newVersion) {
-          case 2:
-            db.execute("ALTER TABLE ${Note.TABLE_NAME} ADD COLUMN ${Note.IS_PINNED} BOOLEAN");
-            db.execute("ALTER TABLE ${Note.TABLE_NAME} ADD COLUMN ${Note.IS_DELETED} BOOLEAN");
-        }
       },
     ),
   );
@@ -37,7 +34,7 @@ class NoteDatabase {
               where: "NOT(${Note.IS_DELETED})",
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
-        .then((notes) => notes.map((map) => Note.fromMap(map)).toList());
+        .then((notes) => notes.map(Note.fromMap).toList());
   }
 
   Future<List<Note>> getAllNotesByQuery(String query) {
@@ -48,7 +45,7 @@ class NoteDatabase {
               whereArgs: ['%$query%'],
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
-        .then((notes) => notes.map((map) => Note.fromMap(map)).toList());
+        .then((notes) => notes.map(Note.fromMap).toList());
   }
 
   Future<List<Note>> getPinnedNotes() {
@@ -58,18 +55,62 @@ class NoteDatabase {
               where: "NOT(${Note.IS_DELETED}) AND ${Note.IS_PINNED}",
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
-        .then((notes) => notes.map((map) => Note.fromMap(map)).toList());
+        .then((notes) => notes.map(Note.fromMap).toList());
   }
 
   Future<List<Note>> getPinnedNotesByQuery(String query) {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where: "NOT(${Note.IS_DELETED}) ${Note.IS_PINNED} AND ${Note.TITLE} LIKE ?",
+              where:
+                  "NOT(${Note.IS_DELETED}) AND ${Note.IS_PINNED} AND ${Note.TITLE} LIKE ?",
               whereArgs: ['%$query%'],
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
-        .then((notes) => notes.map((map) => Note.fromMap(map)).toList());
+        .then((notes) => notes.map(Note.fromMap).toList());
+  }
+
+  Future<List<Note>> getDeletedNotes() {
+    return database
+        .then((db) => db.query(
+              Note.TABLE_NAME,
+              where: Note.IS_DELETED,
+              orderBy: "${Note.LAST_UPDATE} DESC",
+            ))
+        .then((notes) => notes.map(Note.fromMap).toList());
+  }
+
+  Future<List<Note>> getDeletedNotesByQuery(String query) {
+    return database
+        .then((db) => db.query(
+              Note.TABLE_NAME,
+              where: "${Note.IS_DELETED} AND ${Note.TITLE} LIKE ?",
+              whereArgs: ['%$query%'],
+              orderBy: "${Note.LAST_UPDATE} DESC",
+            ))
+        .then((notes) => notes.map(Note.fromMap).toList());
+  }
+
+  Future<List<Note>> getArchivedNotes() {
+    return database
+        .then((db) => db.query(
+              Note.TABLE_NAME,
+              where: "NOT(${Note.IS_DELETED}) AND ${Note.IS_ARCHIVED}",
+              orderBy: "${Note.LAST_UPDATE} DESC",
+            ))
+        .then((notes) => notes.map(Note.fromMap).toList());
+  }
+
+  Future<List<Note>> getArchivedNotesByQuery(String query) {
+    return database
+        .then((db) => db.query(
+              Note.TABLE_NAME,
+              where:
+                  "NOT(${Note.IS_DELETED}) ${Note.IS_ARCHIVED} AND ${Note.TITLE} LIKE ?",
+              whereArgs: ['%$query%'],
+              orderBy: "${Note.LAST_UPDATE} DESC",
+            ))
+        .then((notes) => notes.map(Note.fromMap).toList());
   }
 
   Future<Note> getNoteById(int id) {
@@ -80,7 +121,8 @@ class NoteDatabase {
               whereArgs: [id],
               limit: 1,
             ))
-        .then((notes) => Note.fromMap(notes.first));
+        .then((notes) => notes.first)
+        .then(Note.fromMap);
   }
 
   Future insertNote(Note note) {
