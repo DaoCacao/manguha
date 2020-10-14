@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:manguha/blocs/search_cubit.dart';
+import 'package:manguha/blocs/search/search_cubit.dart';
 import 'package:manguha/res/colors.dart';
 import 'package:manguha/res/strings.dart';
 

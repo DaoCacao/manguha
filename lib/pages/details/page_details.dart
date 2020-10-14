@@ -41,7 +41,8 @@ class DetailsPage extends StatelessWidget {
           listenWhen: (previous, current) =>
               current is ImageAddedError || current is NoteCopied,
           listener: (context, state) {
-            if (state is ImageAddedError) showSnackbar(context, AppStrings.addImageError);
+            if (state is ImageAddedError)
+              showSnackbar(context, AppStrings.addImageError);
             if (state is NoteCopied) showSnackbar(context, AppStrings.copied);
           },
           buildWhen: (previous, current) =>

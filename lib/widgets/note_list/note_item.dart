@@ -1,3 +1,4 @@
+import 'package:contextualactionbar/contextualactionbar.dart';
 import 'package:flutter/material.dart';
 import 'package:manguha/app_router.dart';
 import 'package:manguha/data/note.dart';
@@ -13,28 +14,42 @@ class NoteListItem extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: borderRadius()),
       elevation: 2,
-      child: Container(
-        height: 64,
-        decoration: BoxDecoration(
-          borderRadius: borderRadius(),
-          gradient: AppColors.gradientCard,
-        ),
-        child: InkWell(
-          borderRadius: borderRadius(),
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              note.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
-            ),
+      child: ContextualActionWidget(
+        data: note,
+        selectedColor: Colors.transparent,
+        selectedWidget: selected(),
+        child: Container(
+          height: 64,
+          decoration: BoxDecoration(
+            borderRadius: borderRadius(),
+            gradient: AppColors.gradientCard,
           ),
-          onTap: () => AppRouter.toDetails(context, note.id),
+          child: InkWell(
+            borderRadius: borderRadius(),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                note.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
+              ),
+            ),
+            onTap: () => AppRouter.toDetails(context, note.id),
+          ),
         ),
       ),
     );
   }
 
   BorderRadius borderRadius() => BorderRadius.circular(8);
+
+  Widget selected() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.icon),
+        borderRadius: borderRadius(),
+      ),
+    );
+  }
 }

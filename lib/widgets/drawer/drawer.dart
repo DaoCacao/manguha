@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:manguha/blocs/menu/menu_bloc.dart';
+import 'package:manguha/blocs/menu/menu_state.dart';
 import 'package:manguha/res/colors.dart';
 import 'package:manguha/res/images.dart';
 import 'package:manguha/res/strings.dart';

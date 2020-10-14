@@ -50,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0-nullsafety.2"
+  contextualactionbar:
+    dependency: "direct main"
+    description:
+      name: contextualactionbar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   convert:
     dependency: transitive
     description:

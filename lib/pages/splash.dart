@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:manguha/app_router.dart';
 import 'package:manguha/res/colors.dart';
 import 'package:manguha/res/images.dart';

@@ -31,7 +31,8 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where: "NOT(${Note.IS_DELETED})",
+              where:
+                  "NOT(${Note.IS_PINNED}) AND NOT(${Note.IS_DELETED}) AND NOT(${Note.IS_ARCHIVED})",
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
         .then((notes) => notes.map(Note.fromMap).toList());
@@ -41,7 +42,8 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where: "NOT(${Note.IS_DELETED}) AND ${Note.TITLE} LIKE ?",
+              where:
+                  "NOT(${Note.IS_PINNED}) AND NOT(${Note.IS_DELETED}) AND NOT(${Note.IS_ARCHIVED}) AND ${Note.TITLE} LIKE ?",
               whereArgs: ['%$query%'],
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
@@ -52,7 +54,7 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where: "NOT(${Note.IS_DELETED}) AND ${Note.IS_PINNED}",
+              where: Note.IS_PINNED,
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
         .then((notes) => notes.map(Note.fromMap).toList());
@@ -62,8 +64,7 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where:
-                  "NOT(${Note.IS_DELETED}) AND ${Note.IS_PINNED} AND ${Note.TITLE} LIKE ?",
+              where: "${Note.IS_PINNED} AND ${Note.TITLE} LIKE ?",
               whereArgs: ['%$query%'],
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
@@ -95,7 +96,7 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where: "NOT(${Note.IS_DELETED}) AND ${Note.IS_ARCHIVED}",
+              where: Note.IS_ARCHIVED,
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
         .then((notes) => notes.map(Note.fromMap).toList());
@@ -105,8 +106,7 @@ class NoteDatabase {
     return database
         .then((db) => db.query(
               Note.TABLE_NAME,
-              where:
-                  "NOT(${Note.IS_DELETED}) ${Note.IS_ARCHIVED} AND ${Note.TITLE} LIKE ?",
+              where: "${Note.IS_ARCHIVED} AND ${Note.TITLE} LIKE ?",
               whereArgs: ['%$query%'],
               orderBy: "${Note.LAST_UPDATE} DESC",
             ))
@@ -125,19 +125,24 @@ class NoteDatabase {
         .then(Note.fromMap);
   }
 
-  Future insertNote(Note note) {
-    return database.then((db) => db.insert(
-          Note.TABLE_NAME,
-          note.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        ));
+  Future insertNote(List<Note> notes) {
+    return database
+        .then((db) => db.batch())
+        .then((batch) => notes.forEach((note) {
+              batch.insert(
+                Note.TABLE_NAME,
+                note.toMap(),
+                conflictAlgorithm: ConflictAlgorithm.replace,
+              );
+              batch.commit(noResult: true);
+            }));
   }
 
-  Future deleteNote(int id) {
+  Future deleteNotes(List<int> noteIds) {
     return database.then((db) => db.delete(
           Note.TABLE_NAME,
-          where: "${Note.ID} = ?",
-          whereArgs: [id],
+          where: "${Note.ID} IN (${noteIds.map((e) => "?").join(", ")})",
+          whereArgs: noteIds,
         ));
   }
 }

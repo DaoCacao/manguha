@@ -11,7 +11,7 @@ class AppStrings {
   //Empty states
   static const emptyNoteList = "Тут будут ваши записи";
   static const emptyPinnedList = "Закрепленных записей нет";
-  static const emptyArchiveList = "В архиве пусто";
+  static const emptyArchivedList = "В архиве пусто";
   static const emptyTrashList = "В корзине пусто";
 
   //Search

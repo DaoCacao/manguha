@@ -1,10 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:manguha/blocs/all_notes/all_notes_bloc.dart';
-import 'package:manguha/blocs/all_notes/all_notes_events.dart';
-import 'package:manguha/blocs/pinned_notes/pinned_notes_bloc.dart';
-import 'package:manguha/blocs/pinned_notes/pinned_notes_events.dart';
+import 'package:manguha/blocs/notes_all/all_notes_bloc.dart';
+import 'package:manguha/blocs/notes_all/all_notes_events.dart';
+import 'package:manguha/blocs/notes_archived/archived_notes_bloc.dart';
+import 'package:manguha/blocs/notes_archived/archived_notes_events.dart';
+import 'package:manguha/blocs/notes_deleted/deleted_notes_bloc.dart';
+import 'package:manguha/blocs/notes_deleted/deleted_notes_events.dart';
+import 'package:manguha/blocs/notes_pinned/pinned_notes_bloc.dart';
+import 'package:manguha/blocs/notes_pinned/pinned_notes_events.dart';
 import 'package:manguha/data/note.dart';
 import 'package:manguha/data/note_repository.dart';
 
@@ -15,12 +20,28 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   final NoteRepository _notes;
   final AllNotesBloc _allNotesBloc;
   final PinnedNotesBloc _pinnedNotesBloc;
+  final ArchivedNotesBloc _archivedNotesBloc;
+  final DeletedNotesBloc _deletedNotesBloc;
 
   Note note;
   bool isEdited = false;
 
-  NoteBloc(this._notes, this._allNotesBloc, this._pinnedNotesBloc)
-      : super(NoteInitial());
+  NoteBloc(
+    this._notes,
+    this._allNotesBloc,
+    this._pinnedNotesBloc,
+    this._archivedNotesBloc,
+    this._deletedNotesBloc,
+  ) : super(NoteInitial());
+
+  NoteBloc.get(BuildContext c)
+      : this(
+          c.repository(),
+          c.bloc(),
+          c.bloc(),
+          c.bloc(),
+          c.bloc(),
+        );
 
   @override
   Stream<NoteState> mapEventToState(NoteEvent event) async* {
@@ -67,9 +88,11 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
 
   Stream<NoteState> mapSaveNote(SaveNote event) async* {
     if (note != null && isEdited) {
-      await _notes.save(note);
+      await _notes.save([note]);
       _allNotesBloc.add(LoadAllNotes());
       _pinnedNotesBloc.add(LoadPinnedNotes());
+      _archivedNotesBloc.add(LoadArchivedNotes());
+      _deletedNotesBloc.add(LoadDeletedNotes());
     }
   }
 
