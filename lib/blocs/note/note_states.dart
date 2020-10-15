@@ -21,10 +21,10 @@ class NoteCopied extends NoteState {}
 
 class ImageLoading extends NoteState {}
 
-class ImageAdded extends NoteState {
+class ImageChanged extends NoteState {
   final Uint8List bytes;
 
-  ImageAdded(this.bytes);
+  ImageChanged(this.bytes);
 }
 
 class ImageAddedError extends NoteState {}

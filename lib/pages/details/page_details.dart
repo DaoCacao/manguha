@@ -133,6 +133,9 @@ class DetailsPage extends StatelessWidget {
           showModalBottomSheet(
             context: context,
             builder: (context) => MoreBottomSheet(
+              onDeleteClick: bloc.note.image.isNotEmpty
+                  ? () => bloc.add(DeleteNoteImage())
+                  : null,
               onGalleryClick: () => bloc.add(AddNoteImage(ImageSource.gallery)),
               onCameraClick: () => bloc.add(AddNoteImage(ImageSource.camera)),
               onCopyClick: () => bloc.add(CopyNote()),
@@ -145,7 +148,7 @@ class DetailsPage extends StatelessWidget {
     return ListView(
       children: [
         BlocBuilder<NoteBloc, NoteState>(
-          buildWhen: (previous, current) => current is ImageAdded,
+          buildWhen: (previous, current) => current is ImageChanged,
           builder: (context, state) => Image.memory(note.image),
         ),
         SizedBox(height: 16),

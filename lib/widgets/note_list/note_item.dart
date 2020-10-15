@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:manguha/app_router.dart';
 import 'package:manguha/data/note.dart';
 import 'package:manguha/res/colors.dart';
+import 'package:manguha/res/strings.dart';
 
 class NoteListItem extends StatelessWidget {
   final Note note;
@@ -29,10 +30,15 @@ class NoteListItem extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                note.title,
+                note.title.isNotEmpty ? note.title : AppStrings.noteNoTitle,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: note.title.isNotEmpty
+                      ? AppColors.textPrimary
+                      : AppColors.primaryDark,
+                ),
               ),
             ),
             onTap: () => AppRouter.toDetails(context, note.id),

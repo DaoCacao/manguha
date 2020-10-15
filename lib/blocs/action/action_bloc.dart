@@ -11,7 +11,9 @@ import 'package:manguha/blocs/notes_pinned/pinned_notes_events.dart';
 import 'package:manguha/data/note.dart';
 import 'package:manguha/data/note_repository.dart';
 
-class ActionCubit extends Cubit<int> {
+import 'action_state.dart';
+
+class ActionCubit extends Cubit<ActionState> {
   final NoteRepository _notes;
   final AllNotesBloc _allNotesBloc;
   final PinnedNotesBloc _pinnedNotesBloc;
@@ -24,7 +26,7 @@ class ActionCubit extends Cubit<int> {
     this._pinnedNotesBloc,
     this._archivedNotesBloc,
     this._deletedNotesBloc,
-  ) : super(0); //TODO cubit without state?
+  ) : super(ActionState.Default);
 
   ActionCubit.get(BuildContext c)
       : this(
@@ -35,7 +37,10 @@ class ActionCubit extends Cubit<int> {
           c.bloc(),
         );
 
+  void changeState(ActionState state) => emit(state);
+
   void pin(List<Note> notes) async {
+    emit(ActionState.Default);
     notes.forEach((note) {
       note
         ..isPinned = true
@@ -48,6 +53,7 @@ class ActionCubit extends Cubit<int> {
   }
 
   void unpin(List<Note> notes) async {
+    emit(ActionState.Default);
     notes.forEach((note) {
       note
         ..isPinned = false
@@ -60,6 +66,7 @@ class ActionCubit extends Cubit<int> {
   }
 
   void archive(List<Note> notes) async {
+    emit(ActionState.Default);
     notes.forEach((note) {
       note
         ..isPinned = false
@@ -72,6 +79,7 @@ class ActionCubit extends Cubit<int> {
   }
 
   void unarchive(List<Note> notes) async {
+    emit(ActionState.Default);
     notes.forEach((note) {
       note
         ..isPinned = false
@@ -83,9 +91,13 @@ class ActionCubit extends Cubit<int> {
     _update();
   }
 
-  void download(List<Note> notes) async {}
+  void download(List<Note> notes, String type) async {
+    emit(ActionState.Default);
+    //TODO add download
+  }
 
   void delete(List<Note> notes) async {
+    emit(ActionState.Default);
     notes.forEach((note) {
       note
         ..isPinned = false
@@ -98,6 +110,7 @@ class ActionCubit extends Cubit<int> {
   }
 
   void undelete(List<Note> notes) async {
+    emit(ActionState.Default);
     notes.forEach((note) {
       note
         ..isPinned = false
@@ -110,6 +123,7 @@ class ActionCubit extends Cubit<int> {
   }
 
   void fullDelete(List<Note> notes) async {
+    emit(ActionState.Default);
     _notes.fullDelete(notes);
     _update();
   }

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,6 +65,8 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
       yield* mapCopyNote(event);
     } else if (event is AddNoteImage) {
       yield* mapAddImage(event);
+    } else if (event is DeleteNoteImage) {
+      yield* mapDeleteImage(event);
     }
   }
 
@@ -128,7 +132,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     final bytes = await ImagePicker()
         .getImage(source: event.source)
         .then((image) => image.readAsBytes())
-        .catchError((e) => null); //TODO check if denied
+        .catchError((e) => null);
 
     if (bytes == null) {
       yield ImageAddedError();
@@ -137,7 +141,15 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
         ..image = bytes
         ..lastUpdate = DateTime.now();
       isEdited = true;
-      yield ImageAdded(bytes);
+      yield ImageChanged(note.image);
     }
+  }
+
+  Stream<NoteState> mapDeleteImage(DeleteNoteImage event) async* {
+    note
+      ..image = Uint8List(0)
+      ..lastUpdate = DateTime.now();
+    isEdited = true;
+    yield ImageChanged(note.image);
   }
 }

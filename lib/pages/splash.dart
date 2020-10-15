@@ -24,10 +24,8 @@ class _SplashPageState extends State<SplashPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              //TODO trouble with svg, no shadow
               Image.asset(AppImages.logo),
               SizedBox(height: 16),
-              //TODO no shadow
               Image.asset(AppImages.name),
             ],
           ),

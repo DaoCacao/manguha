@@ -14,7 +14,7 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: AppColors.background,
+        color: AppColors.primary,
         child: Column(
           children: [
             header(context),
@@ -30,7 +30,7 @@ class AppDrawer extends StatelessWidget {
     return Container(
       height: Scaffold.of(context).appBarMaxHeight,
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      color: AppColors.primary,
+      color: AppColors.primaryDark,
       child: Align(
         alignment: Alignment.bottomLeft,
         child: Row(

@@ -7,7 +7,6 @@ class AppStrings {
   static const titleCreate = "Новая запись";
   static const titleEdit = "Редактирование";
 
-
   //Empty states
   static const emptyNoteList = "Тут будут ваши записи";
   static const emptyPinnedList = "Закрепленных записей нет";
@@ -21,6 +20,7 @@ class AppStrings {
   static const hintClearTrash = "Записи из корзины удаляются через 7 дней";
 
   //Note
+  static const noteNoTitle = "Нет названия";
   static const noteTitle = "Название";
   static const noteContent = "Текст";
   static const lastUpdate = "Последнее изменение:";
@@ -32,6 +32,7 @@ class AppStrings {
   static const support = "Справка/Отзыв";
 
   //Add image
+  static const deleteImage = "Удалить изображение";
   static const fromGallery = "Добавить изображение";
   static const fromCamera = "Сделать фото";
   static const addImageError = "Не удалось добавить фотографию";
@@ -39,4 +40,11 @@ class AppStrings {
   //Copy
   static const copy = "Копировать текст";
   static const copied = "Скопировано в буфер обмена";
+
+  //Dialog
+  static const saveToDevice = "Сохранить на устройство";
+  static const saveAs = "Сохранить в формате";
+  static const deleteForever = "Удалить навсегда?";
+  static const delete = "Удалить";
+  static const cancel = "Отменить";
 }

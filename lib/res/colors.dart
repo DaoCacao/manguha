@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const background = Color(0xffFFE2E2);
-  static const primary = Color(0xffC88C9E);
+  static const primary = Color(0xffFFE2E2);
+  static const primaryDark = Color(0xffC88C9E);
   static const textSecondary = Color(0xffFED7DE);
   static const textPrimary = Color(0xff410917);
   static const icon = Color(0xff410917);
@@ -14,7 +14,7 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [
       AppColors.textSecondary,
-      AppColors.primary,
+      AppColors.primaryDark,
     ],
   );
 
@@ -23,7 +23,7 @@ class AppColors {
     end: Alignment.centerRight,
     colors: [
       AppColors.white,
-      AppColors.background,
+      AppColors.primary,
     ],
   );
 }

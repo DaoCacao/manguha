@@ -20,7 +20,7 @@ class ContentField extends StatelessWidget {
       keyboardType: TextInputType.multiline,
       maxLines: null,
       decoration: InputDecoration(
-        hintStyle: TextStyle(color: AppColors.primary),
+        hintStyle: TextStyle(color: AppColors.primaryDark),
         hintText: AppStrings.noteContent,
         border: InputBorder.none,
         focusedBorder: InputBorder.none,

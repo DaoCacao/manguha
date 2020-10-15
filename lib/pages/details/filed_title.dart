@@ -18,7 +18,7 @@ class TitleField extends StatelessWidget {
       style: TextStyle(fontSize: 18, color: AppColors.textPrimary),
       textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(
-        hintStyle: TextStyle(color: AppColors.primary),
+        hintStyle: TextStyle(color: AppColors.primaryDark),
         hintText: AppStrings.noteTitle,
         border: InputBorder.none,
         focusedBorder: InputBorder.none,

@@ -35,3 +35,5 @@ class AddNoteImage extends NoteEvent {
 
   AddNoteImage(this.source);
 }
+
+class DeleteNoteImage extends NoteEvent {}

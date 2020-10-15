@@ -9,7 +9,7 @@ import 'package:manguha/blocs/notes_deleted/deleted_notes_bloc.dart';
 import 'package:manguha/data/database.dart';
 import 'package:manguha/data/note_repository.dart';
 import 'package:manguha/pages/details/page_details.dart';
-import 'package:manguha/pages/main.dart';
+import 'package:manguha/pages/main/main.dart';
 import 'package:manguha/pages/splash.dart';
 import 'package:manguha/res/colors.dart';
 
@@ -42,10 +42,10 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            scaffoldBackgroundColor: AppColors.background,
-            primaryColor: AppColors.primary,
+            scaffoldBackgroundColor: AppColors.primary,
+            primaryColor: AppColors.primaryDark,
             accentColor: AppColors.accent,
-            bottomAppBarColor: AppColors.primary,
+            bottomAppBarColor: AppColors.primaryDark,
             visualDensity: VisualDensity.adaptivePlatformDensity,
             fontFamily: 'Comfortaa',
           ),

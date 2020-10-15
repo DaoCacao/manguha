@@ -2,7 +2,6 @@ import 'package:contextualactionbar/contextual_scaffold.dart';
 import 'package:contextualactionbar/contextualactionbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:manguha/blocs/action/action_bloc.dart';
 import 'package:manguha/blocs/menu/menu_bloc.dart';
 import 'package:manguha/blocs/menu/menu_state.dart';
@@ -12,13 +11,12 @@ import 'package:manguha/data/note.dart';
 import 'package:manguha/pages/notes_archived.dart';
 import 'package:manguha/pages/notes_deleted.dart';
 import 'package:manguha/pages/notes_pinned.dart';
-import 'package:manguha/res/colors.dart';
-import 'package:manguha/res/images.dart';
 import 'package:manguha/widgets/drawer/drawer.dart';
 import 'package:manguha/widgets/search.dart';
 
-import '../app_router.dart';
-import 'notes_all.dart';
+import '../../app_router.dart';
+import '../notes_all.dart';
+import 'bottom_app_bar.dart';
 
 class MainPage extends StatelessWidget {
   final searchFocus = FocusNode();
@@ -28,11 +26,10 @@ class MainPage extends StatelessWidget {
     return BlocBuilder<MenuCubit, MenuState>(
       builder: (context, state) {
         return ContextualScaffold<Note>(
-          // extendBody: true,
           drawer: AppDrawer(),
-          contextualAppBar: contextualAppBar(context.bloc(), state),
+          contextualAppBar: contextualAppBar(context.bloc()),
           appBar: appBar(context),
-          bottomNavigationBar: bottomAppBar(context),
+          bottomNavigationBar: AppBottomAppBar(),
           floatingActionButton: fab(context),
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           body: content(state),
@@ -41,58 +38,11 @@ class MainPage extends StatelessWidget {
     );
   }
 
-  Widget contextualAppBar(ActionCubit action, MenuState state) {
+  Widget contextualAppBar(ActionCubit action) {
     return ContextualAppBar<Note>(
+      centerTitle: false,
       counterBuilder: (itemsCount) => Text(itemsCount.toString()),
-      contextualActions: [
-        if (state is All || state is Archive)
-          ContextualAction(
-            itemsHandler: action.pin,
-            child: SvgPicture.asset(
-              AppImages.pin,
-              color: AppColors.white,
-            ),
-          ),
-        if (state is Pinned)
-          ContextualAction(
-            itemsHandler: action.unpin,
-            child: SvgPicture.asset(
-              AppImages.pin,
-              color: AppColors.accent,
-            ),
-          ),
-        if (state is All || state is Pinned)
-          ContextualAction(
-            itemsHandler: action.archive,
-            child: Icon(Icons.archive),
-          ),
-        if (state is Archive)
-          ContextualAction(
-            itemsHandler: action.unarchive,
-            child: Icon(Icons.unarchive),
-          ),
-        if (state is Trash)
-          ContextualAction(
-            itemsHandler: action.undelete,
-            child: Icon(Icons.unarchive),
-          ),
-        ContextualAction(
-          //TODO add select format dialog
-          itemsHandler: action.download,
-          child: Icon(Icons.file_download),
-        ),
-        if (state is! Trash)
-          ContextualAction(
-            itemsHandler: action.delete,
-            child: Icon(Icons.delete),
-          ),
-        if (state is Trash)
-          ContextualAction(
-            //TODO confirm dialog
-            itemsHandler: action.fullDelete,
-            child: Icon(Icons.delete),
-          ),
-      ],
+      contextualActions: [],
     );
   }
 
@@ -145,18 +95,6 @@ class MainPage extends StatelessWidget {
           },
         );
       },
-    );
-  }
-
-  Widget bottomAppBar(BuildContext context) {
-    final margin = MediaQuery.of(context).viewInsets.bottom;
-    return BottomAppBar(
-      shape: CircularNotchedRectangle(),
-      notchMargin: 8,
-      child: Container(
-        margin: EdgeInsets.only(bottom: margin),
-        height: 56,
-      ),
     );
   }
 

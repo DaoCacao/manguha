@@ -13,7 +13,7 @@ class EmptyPlaceholder extends StatelessWidget {
         text,
         style: TextStyle(
           fontSize: 18,
-          color: AppColors.primary,
+          color: AppColors.primaryDark,
         ),
       ),
     );

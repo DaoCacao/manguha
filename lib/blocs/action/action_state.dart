@@ -1,0 +1,4 @@
+enum ActionState {
+  Default,
+  Action,
+}
