@@ -11,13 +11,19 @@ import 'package:manguha/widgets/placeholders/loading.dart';
 class ArchivedNotesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ArchivedNotesBloc, ArchivedNotesState>(
-      builder: (context, state) {
-        if (state is ArchivedNotesInitial) context.bloc<ArchivedNotesBloc>().add(LoadArchivedNotes());
-        if (state is ArchivedNotesLoaded) return NoteListView(notes: state.list);
-        if (state is ArchivedNotesEmpty) return EmptyPlaceholder(text: AppStrings.emptyArchivedList);
-        return LoadingPlaceholder();
-      },
+    return BlocProvider(
+      create: (c) => ArchivedNotesBloc(c.repository(), c.bloc()),
+      child: BlocBuilder<ArchivedNotesBloc, ArchivedNotesState>(
+        builder: (context, state) {
+          if (state is ArchivedNotesInitial)
+            context.bloc<ArchivedNotesBloc>().add(LoadArchivedNotes());
+          if (state is ArchivedNotesLoaded)
+            return NoteListView(notes: state.list);
+          if (state is ArchivedNotesEmpty)
+            return EmptyPlaceholder(text: AppStrings.emptyArchivedList);
+          return LoadingPlaceholder();
+        },
+      ),
     );
   }
 }

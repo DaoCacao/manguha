@@ -9,13 +9,13 @@ import 'package:manguha/blocs/search/search_cubit.dart';
 import 'package:manguha/blocs/search/search_state.dart';
 import 'package:manguha/data/note.dart';
 import 'package:manguha/pages/details/routes.dart';
-import 'package:manguha/pages/notes_archived.dart';
-import 'package:manguha/pages/notes_deleted.dart';
-import 'package:manguha/pages/notes_pinned.dart';
 import 'package:manguha/widgets/drawer/drawer.dart';
 import 'package:manguha/widgets/search.dart';
 
 import '../notes_all.dart';
+import '../notes_archived.dart';
+import '../notes_deleted.dart';
+import '../notes_pinned.dart';
 import 'bottom_app_bar.dart';
 
 class MainPage extends StatelessWidget {
@@ -23,18 +23,26 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MenuCubit, MenuState>(
-      builder: (context, state) {
-        return ContextualScaffold<Note>(
-          drawer: AppDrawer(),
-          contextualAppBar: contextualAppBar(context.bloc()),
-          appBar: appBar(context),
-          bottomNavigationBar: AppBottomAppBar(),
-          floatingActionButton: fab(context),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          body: content(state),
-        );
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (c) => SearchCubit()),
+        BlocProvider(create: (c) => MenuCubit(c.bloc())),
+        BlocProvider(create: (c) => ActionCubit(c.repository())),
+      ],
+      child: BlocBuilder<MenuCubit, MenuState>(
+        builder: (context, state) {
+          return ContextualScaffold<Note>(
+            drawer: AppDrawer(),
+            contextualAppBar: contextualAppBar(context.bloc()),
+            appBar: appBar(context),
+            bottomNavigationBar: AppBottomAppBar(),
+            floatingActionButton: fab(context),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.endDocked,
+            body: content(state),
+          );
+        },
+      ),
     );
   }
 
@@ -78,7 +86,7 @@ class MainPage extends StatelessWidget {
         else
           return IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.bloc<MenuCubit>().toNone(),
+            onPressed: () => context.bloc<MenuCubit>().changeState(All()),
           );
       },
     );
@@ -106,6 +114,13 @@ class MainPage extends StatelessWidget {
   }
 
   Widget content(MenuState state) {
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 300),
+      child: page(state),
+    );
+  }
+
+  Widget page(MenuState state) {
     if (state is All) return AllNotesPage();
     if (state is Pinned) return PinnedNotesPage();
     if (state is Archive) return ArchivedNotesPage();

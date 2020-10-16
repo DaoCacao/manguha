@@ -24,7 +24,7 @@ class SearchField extends StatelessWidget {
           decoration: TextDecoration.underline,
         ),
       ),
-      onChanged: (query) => context.bloc<SearchCubit>().search(query),
+      onChanged: (query) => context.bloc<SearchCubit>().searchState(query),
     );
   }
 }

@@ -11,13 +11,18 @@ import 'package:manguha/widgets/placeholders/loading.dart';
 class AllNotesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AllNotesBloc, AllNotesState>(
-      builder: (context, state) {
-        if (state is AllNotesInitial) context.bloc<AllNotesBloc>().add(LoadAllNotes());
-        if (state is AllNotesLoaded) return NoteListView(notes: state.list);
-        if (state is AllNotesEmpty) return EmptyPlaceholder(text: AppStrings.emptyNoteList);
-        return LoadingPlaceholder();
-      },
+    return BlocProvider(
+      create: (c) => AllNotesBloc(c.repository(), c.bloc()),
+      child: BlocBuilder<AllNotesBloc, AllNotesState>(
+        builder: (context, state) {
+          if (state is AllNotesInitial)
+            context.bloc<AllNotesBloc>().add(LoadAllNotes());
+          if (state is AllNotesLoaded) return NoteListView(notes: state.list);
+          if (state is AllNotesEmpty)
+            return EmptyPlaceholder(text: AppStrings.emptyNoteList);
+          return LoadingPlaceholder();
+        },
+      ),
     );
   }
 }

@@ -11,13 +11,19 @@ import 'package:manguha/widgets/placeholders/loading.dart';
 class PinnedNotesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PinnedNotesBloc, PinnedNotesState>(
-      builder: (context, state) {
-        if (state is PinnedNotesInitial) context.bloc<PinnedNotesBloc>().add(LoadPinnedNotes());
-        if (state is PinnedNotesLoaded) return NoteListView(notes: state.list);
-        if (state is PinnedNotesEmpty) return EmptyPlaceholder(text: AppStrings.emptyPinnedList);
-        return LoadingPlaceholder();
-      },
+    return BlocProvider(
+      create: (c) => PinnedNotesBloc(c.repository(), c.bloc()),
+      child: BlocBuilder<PinnedNotesBloc, PinnedNotesState>(
+        builder: (context, state) {
+          if (state is PinnedNotesInitial)
+            context.bloc<PinnedNotesBloc>().add(LoadPinnedNotes());
+          if (state is PinnedNotesLoaded)
+            return NoteListView(notes: state.list);
+          if (state is PinnedNotesEmpty)
+            return EmptyPlaceholder(text: AppStrings.emptyPinnedList);
+          return LoadingPlaceholder();
+        },
+      ),
     );
   }
 }

@@ -12,5 +12,7 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
-  void search(String query) => emit(Search(query));
+  void searchState(String query) => emit(Search(query));
+
+  void defaultState() => emit(Default());
 }
