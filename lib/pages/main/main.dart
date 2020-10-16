@@ -8,13 +8,13 @@ import 'package:manguha/blocs/menu/menu_state.dart';
 import 'package:manguha/blocs/search/search_cubit.dart';
 import 'package:manguha/blocs/search/search_state.dart';
 import 'package:manguha/data/note.dart';
+import 'package:manguha/pages/details/routes.dart';
 import 'package:manguha/pages/notes_archived.dart';
 import 'package:manguha/pages/notes_deleted.dart';
 import 'package:manguha/pages/notes_pinned.dart';
 import 'package:manguha/widgets/drawer/drawer.dart';
 import 'package:manguha/widgets/search.dart';
 
-import '../../app_router.dart';
 import '../notes_all.dart';
 import 'bottom_app_bar.dart';
 
@@ -101,7 +101,7 @@ class MainPage extends StatelessWidget {
   Widget fab(BuildContext context) {
     return FloatingActionButton(
       child: Icon(Icons.add),
-      onPressed: () => AppRouter.toCreateNote(context),
+      onPressed: () => Navigator.push(context, CreateNotePageRoute()),
     );
   }
 

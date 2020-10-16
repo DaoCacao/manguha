@@ -42,76 +42,75 @@ class AppBottomAppBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                if (state is All || state is Archive)
-                  ContextualAction(
-                    itemsHandler: action.pin,
-                    child: SvgPicture.asset(
-                      AppImages.pin,
-                      color: AppColors.white,
-                    ),
-                  ),
-                if (state is Pinned)
-                  ContextualAction<Note>(
-                    itemsHandler: action.unpin,
-                    child: SvgPicture.asset(
-                      AppImages.pin,
-                      color: AppColors.accent,
-                    ),
-                  ),
-                if (state is All || state is Pinned)
-                  ContextualAction<Note>(
-                    itemsHandler: action.archive,
-                    child: Icon(
-                      Icons.archive,
-                      color: AppColors.white,
-                    ),
-                  ),
-                if (state is Archive)
-                  ContextualAction<Note>(
-                    itemsHandler: action.unarchive,
-                    child: Icon(
-                      Icons.unarchive,
-                      color: AppColors.white,
-                    ),
-                  ),
-                if (state is Trash)
-                  ContextualAction<Note>(
-                    itemsHandler: action.undelete,
-                    child: Icon(
-                      Icons.unarchive,
-                      color: AppColors.white,
-                    ),
-                  ),
-                ContextualAction<Note>(
-                  itemsHandler: (items) =>
-                      showConfirmDownloadDialog(context, items),
-                  child: Icon(
-                    Icons.file_download,
-                    color: AppColors.white,
-                  ),
-                ),
-                if (state is! Trash)
-                  ContextualAction<Note>(
-                    itemsHandler: action.delete,
-                    child: Icon(
-                      Icons.delete,
-                      color: AppColors.white,
-                    ),
-                  ),
-                if (state is Trash)
-                  ContextualAction<Note>(
-                    itemsHandler: (items) =>
-                        showConfirmDeleteDialog(context, items),
-                    child: Icon(
-                      Icons.delete,
-                      color: AppColors.white,
-                    ),
-                  ),
+                if (state is All || state is Archive) actionPin(action),
+                if (state is Pinned) actionUnpin(action),
+                if (state is All || state is Pinned) actionArchive(action),
+                if (state is Archive) actionUnarchive(action),
+                if (state is Trash) actionUndelete(action),
+                actionDownload(action, context),
+                if (state is! Trash) actionDelete(action),
+                if (state is Trash) actionFullDelete(action, context),
               ],
             ),
           );
         }
       },
+    );
+  }
+
+  Widget actionPin(ActionCubit action) {
+    return ContextualAction(
+      itemsHandler: action.pin,
+      child: SvgPicture.asset(AppImages.pin, color: AppColors.white),
+    );
+  }
+
+  Widget actionUnpin(ActionCubit action) {
+    return ContextualAction<Note>(
+      itemsHandler: action.unpin,
+      child: SvgPicture.asset(AppImages.pin, color: AppColors.accent),
+    );
+  }
+
+  Widget actionArchive(ActionCubit action) {
+    return ContextualAction<Note>(
+      itemsHandler: action.archive,
+      child: Icon(Icons.archive, color: AppColors.white),
+    );
+  }
+
+  Widget actionUnarchive(ActionCubit action) {
+    return ContextualAction<Note>(
+      itemsHandler: action.unarchive,
+      child: Icon(Icons.unarchive, color: AppColors.white),
+    );
+  }
+
+  Widget actionDownload(ActionCubit action, BuildContext context) {
+    return ContextualAction<Note>(
+      itemsHandler: (items) => showConfirmDownloadDialog(context, items),
+      child: Icon(Icons.file_download, color: AppColors.white),
+    );
+  }
+
+  Widget actionDelete(ActionCubit action) {
+    return ContextualAction<Note>(
+      itemsHandler: action.delete,
+      child: Icon(Icons.delete, color: AppColors.white),
+    );
+  }
+
+  Widget actionUndelete(ActionCubit action) {
+    return ContextualAction<Note>(
+      itemsHandler: action.undelete,
+      child: Icon(Icons.unarchive, color: AppColors.white),
+    );
+  }
+
+  Widget actionFullDelete(ActionCubit action, BuildContext context) {
+    return ContextualAction<Note>(
+      itemsHandler: (items) => showConfirmDeleteDialog(context, items),
+      child: Icon(Icons.delete, color: AppColors.white),
     );
   }
 

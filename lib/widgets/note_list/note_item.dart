@@ -1,7 +1,7 @@
 import 'package:contextualactionbar/contextualactionbar.dart';
 import 'package:flutter/material.dart';
-import 'package:manguha/app_router.dart';
 import 'package:manguha/data/note.dart';
+import 'package:manguha/pages/details/routes.dart';
 import 'package:manguha/res/colors.dart';
 import 'package:manguha/res/strings.dart';
 
@@ -41,7 +41,7 @@ class NoteListItem extends StatelessWidget {
                 ),
               ),
             ),
-            onTap: () => AppRouter.toDetails(context, note.id),
+            onTap: () => Navigator.push(context, OpenNotePageRoute(note.id)),
           ),
         ),
       ),

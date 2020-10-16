@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:manguha/app_router.dart';
 import 'package:manguha/res/colors.dart';
 import 'package:manguha/res/images.dart';
+
+import 'main/routes.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -36,6 +37,6 @@ class _SplashPageState extends State<SplashPage> {
 
   void _navigateNext() async {
     await Future.delayed(Duration(seconds: 1));
-    AppRouter.toMain(context);
+    Navigator.pushReplacement(context, MainPageRoute());
   }
 }

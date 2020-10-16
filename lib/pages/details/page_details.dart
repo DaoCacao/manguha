@@ -25,6 +25,7 @@ class DetailsPage extends StatelessWidget {
   DetailsPage._(this._id);
 
   DetailsPage.open(DetailsPageArgs args) : this._(args.noteId);
+  DetailsPage.open2(int noteId) : this._(noteId);
 
   DetailsPage.create() : this._(null);
 
