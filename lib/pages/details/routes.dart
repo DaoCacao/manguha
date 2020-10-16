@@ -8,7 +8,7 @@ class CreateNotePageRoute extends MaterialPageRoute {
       : super(
           builder: (context) {
             return BlocProvider(
-              create: (c) => NoteBloc.get(c),
+              create: (c) => NoteBloc(c.repository()),
               child: DetailsPage.create(),
             );
           },
@@ -20,7 +20,7 @@ class OpenNotePageRoute extends MaterialPageRoute {
       : super(
           builder: (context) {
             return BlocProvider(
-              create: (c) => NoteBloc.get(c),
+              create: (c) => NoteBloc(c.repository()),
               child: DetailsPage.open2(noteId),
             );
           },

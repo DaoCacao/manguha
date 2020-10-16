@@ -58,8 +58,8 @@ class MainPage extends StatelessWidget {
   Widget title() {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
-        return state == SearchState.Search
-            ? Search(focus: searchFocus)
+        return state is Search
+            ? SearchField(focus: searchFocus)
             : BlocBuilder<MenuCubit, MenuState>(
                 builder: (context, state) => Text(state.title),
               );
@@ -88,7 +88,7 @@ class MainPage extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
         return IconButton(
-          icon: Icon(state == SearchState.Search ? Icons.close : Icons.search),
+          icon: Icon(state is Search ? Icons.close : Icons.search),
           onPressed: () {
             context.bloc<SearchCubit>().switchState();
             searchFocus.requestFocus();

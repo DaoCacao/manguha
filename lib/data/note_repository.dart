@@ -1,10 +1,18 @@
+import 'dart:async';
+
 import 'package:manguha/data/database.dart';
 import 'package:manguha/data/note.dart';
 
 class NoteRepository {
   final NoteDatabase _database;
+  final StreamController<int> _observable = StreamController.broadcast();
 
-  NoteRepository(this._database);
+  Stream observable;
+  int i = 0;
+
+  NoteRepository(this._database) {
+    observable = _observable.stream;
+  }
 
   Future<List<Note>> getAll() {
     return _database.getAllNotes();
@@ -42,11 +50,13 @@ class NoteRepository {
     return _database.getNoteById(id);
   }
 
-  Future save(List<Note> notes) {
-    return _database.insertNote(notes);
+  Future save(List<Note> notes) async {
+    await _database.insertNote(notes);
+    _observable.add(++i);
   }
 
-  Future fullDelete(List<Note> notes) {
-    return _database.deleteNotes(notes.map((e) => e.id).toList());
+  Future fullDelete(List<Note> notes) async {
+    await _database.deleteNotes(notes.map((e) => e.id).toList());
+    _observable.add(++i);
   }
 }

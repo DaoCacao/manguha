@@ -4,10 +4,10 @@ import 'package:manguha/blocs/search/search_cubit.dart';
 import 'package:manguha/res/colors.dart';
 import 'package:manguha/res/strings.dart';
 
-class Search extends StatelessWidget {
+class SearchField extends StatelessWidget {
   final FocusNode focus;
 
-  Search({this.focus});
+  SearchField({this.focus});
 
   @override
   Widget build(BuildContext context) {

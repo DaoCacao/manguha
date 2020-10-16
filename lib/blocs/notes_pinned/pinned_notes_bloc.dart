@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:manguha/blocs/search/search_cubit.dart';
+import 'package:manguha/blocs/search/search_state.dart';
 import 'package:manguha/data/note_repository.dart';
 
 import 'pinned_notes_events.dart';
@@ -7,9 +9,22 @@ import 'pinned_notes_states.dart';
 class PinnedNotesBloc extends Bloc<PinnedNotesEvent, PinnedNotesState> {
   final NoteRepository _notes;
 
-  String query = "";
+  PinnedNotesBloc(
+    this._notes,
+    SearchCubit search,
+  ) : super(PinnedNotesInitial()) {
+    _notes.observable.listen((e) => add(LoadPinnedNotes()));
 
-  PinnedNotesBloc(this._notes) : super(PinnedNotesInitial());
+    search.listen(
+      (state) {
+        if (state is Default) {
+          add(LoadPinnedNotes());
+        } else if (state is Search) {
+          add(SearchPinnedNotes(state.query));
+        }
+      },
+    );
+  }
 
   @override
   Stream<PinnedNotesState> mapEventToState(PinnedNotesEvent event) async* {
@@ -23,9 +38,7 @@ class PinnedNotesBloc extends Bloc<PinnedNotesEvent, PinnedNotesState> {
   Stream<PinnedNotesState> mapLoadNotes(LoadPinnedNotes event) async* {
     yield PinnedNotesLoading();
 
-    final list = query.isEmpty
-        ? await _notes.getPinned()
-        : await _notes.getPinnedByQuery(query);
+    final list = await _notes.getPinned();
 
     if (list.isEmpty)
       yield PinnedNotesEmpty();
@@ -34,7 +47,13 @@ class PinnedNotesBloc extends Bloc<PinnedNotesEvent, PinnedNotesState> {
   }
 
   Stream<PinnedNotesState> mapSearchNotes(SearchPinnedNotes event) async* {
-    query = event.query;
-    add(LoadPinnedNotes());
+    yield PinnedNotesLoading();
+
+    final list = await _notes.getPinnedByQuery(event.query);
+
+    if (list.isEmpty)
+      yield PinnedNotesEmpty();
+    else
+      yield PinnedNotesLoaded(list);
   }
 }

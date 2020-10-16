@@ -6,6 +6,7 @@ import 'blocs/notes_all/all_notes_bloc.dart';
 import 'blocs/notes_archived/archived_notes_bloc.dart';
 import 'blocs/notes_deleted/deleted_notes_bloc.dart';
 import 'blocs/notes_pinned/pinned_notes_bloc.dart';
+import 'blocs/search/search_cubit.dart';
 import 'data/database.dart';
 import 'data/note_repository.dart';
 
@@ -24,10 +25,11 @@ class DataLayer extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => MenuCubit()),
-          BlocProvider(create: (c) => AllNotesBloc(c.repository())),
-          BlocProvider(create: (c) => PinnedNotesBloc(c.repository())),
-          BlocProvider(create: (c) => ArchivedNotesBloc(c.repository())),
-          BlocProvider(create: (c) => DeletedNotesBloc(c.repository())),
+          BlocProvider(create: (c) => SearchCubit()),
+          BlocProvider(create: (c) => AllNotesBloc(c.repository(), c.bloc())),
+          BlocProvider(create: (c) => PinnedNotesBloc(c.repository(), c.bloc())),
+          BlocProvider(create: (c) => ArchivedNotesBloc(c.repository(), c.bloc())),
+          BlocProvider(create: (c) => DeletedNotesBloc(c.repository(), c.bloc())),
         ],
         child: child,
       ),

@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:manguha/blocs/search/search_cubit.dart';
+import 'package:manguha/blocs/search/search_state.dart';
 import 'package:manguha/data/note_repository.dart';
 
 import 'archived_notes_events.dart';
@@ -7,9 +9,22 @@ import 'archived_notes_states.dart';
 class ArchivedNotesBloc extends Bloc<ArchivedNotesEvent, ArchivedNotesState> {
   final NoteRepository _notes;
 
-  String query = "";
+  ArchivedNotesBloc(
+    this._notes,
+    SearchCubit search,
+  ) : super(ArchivedNotesInitial()) {
+    _notes.observable.listen((e) => add(LoadArchivedNotes()));
 
-  ArchivedNotesBloc(this._notes) : super(ArchivedNotesInitial());
+    search.listen(
+      (state) {
+        if (state is Default) {
+          add(LoadArchivedNotes());
+        } else if (state is Search) {
+          add(SearchArchivedNotes(state.query));
+        }
+      },
+    );
+  }
 
   @override
   Stream<ArchivedNotesState> mapEventToState(ArchivedNotesEvent event) async* {
@@ -23,9 +38,7 @@ class ArchivedNotesBloc extends Bloc<ArchivedNotesEvent, ArchivedNotesState> {
   Stream<ArchivedNotesState> mapLoadNotes(LoadArchivedNotes event) async* {
     yield ArchivedNotesLoading();
 
-    final list = query.isEmpty
-        ? await _notes.getArchived()
-        : await _notes.getArchivedByQuery(query);
+    final list = await _notes.getArchived();
 
     if (list.isEmpty)
       yield ArchivedNotesEmpty();
@@ -34,7 +47,13 @@ class ArchivedNotesBloc extends Bloc<ArchivedNotesEvent, ArchivedNotesState> {
   }
 
   Stream<ArchivedNotesState> mapSearchNotes(SearchArchivedNotes event) async* {
-    query = event.query;
-    add(LoadArchivedNotes());
+    yield ArchivedNotesLoading();
+
+    final list = await _notes.getArchivedByQuery(event.query);
+
+    if (list.isEmpty)
+      yield ArchivedNotesEmpty();
+    else
+      yield ArchivedNotesLoaded(list);
   }
 }
