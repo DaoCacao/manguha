@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:manguha/data_layer.dart';
+import 'package:manguha/data/data_layer.dart';
+import 'package:manguha/domain/domain_layer.dart';
 
-import 'app.dart';
-import 'blocs/bloc_observer.dart';
+import 'domain/blocs/bloc_observer.dart';
+import 'presentation/app.dart';
 
 void main() {
   Bloc.observer = AppBlocObserver();
 
   runApp(
     DataLayer(
-      child: App(),
+      child: DomainLayer(
+        child: App(),
+      ),
     ),
   );
 }
