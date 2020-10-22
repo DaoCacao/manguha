@@ -93,9 +93,9 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   Stream<NoteState> mapAddImage(AddNoteImage event) async* {
     var bytes;
     if (event.source == ImageSource.gallery) {
-      bytes = _loadGalleryImageUseCase.load();
+      bytes = await _loadGalleryImageUseCase.load();
     } else {
-      bytes = _loadCameraImageUseCase.load();
+      bytes = await _loadCameraImageUseCase.load();
     }
 
     if (bytes == null) {

@@ -12,6 +12,7 @@ import 'package:manguha/domain/use_cases/get_deleted_notes_use_case.dart';
 import 'package:manguha/domain/use_cases/get_note_use_case.dart';
 import 'package:manguha/domain/use_cases/get_pinned_notes_by_query_use_case.dart';
 import 'package:manguha/domain/use_cases/get_pinned_notes_use_case.dart';
+import 'package:manguha/domain/use_cases/load_camera_image_use_case.dart';
 import 'package:manguha/domain/use_cases/load_gallery_image_use_case.dart';
 import 'package:manguha/domain/use_cases/move_note_to_trash_use_case.dart';
 import 'package:manguha/domain/use_cases/pin_note_use_case.dart';
@@ -43,7 +44,7 @@ class DomainLayer extends StatelessWidget {
         RepositoryProvider(create: (c) => GetDeletedNotesUseCase(c.repository())),
         RepositoryProvider(create: (c) => GetDeletedNotesByQueryUseCase(c.repository())),
         RepositoryProvider(create: (c) => LoadGalleryImageUseCase()),
-        RepositoryProvider(create: (c) => LoadGalleryImageUseCase()),
+        RepositoryProvider(create: (c) => LoadCameraImageUseCase()),
         RepositoryProvider(create: (c) => CopyNoteUseCase()),
         RepositoryProvider(create: (c) => SaveNoteUseCase(c.repository())),
         RepositoryProvider(create: (c) => ArchiveNoteUseCase(c.repository())),
