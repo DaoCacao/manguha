@@ -7,6 +7,7 @@ import 'package:manguha/data/entities/note.dart';
 import 'package:manguha/domain/blocs/action/action_bloc.dart';
 import 'package:manguha/domain/blocs/menu/menu_bloc.dart';
 import 'package:manguha/domain/blocs/menu/menu_state.dart';
+import 'package:manguha/presentation/context_ext.dart';
 import 'package:manguha/presentation/res/colors.dart';
 import 'package:manguha/presentation/res/images.dart';
 import 'package:manguha/presentation/res/strings.dart';
@@ -177,12 +178,22 @@ class AppBottomAppBar extends StatelessWidget {
           AppDialogItem(
             text: saveAsTxt,
             icon: Icons.download_sharp,
-            onClick: () => context.bloc<ActionCubit>().downloadAsTxt(notes),
+            onClick: () => context
+                .bloc<ActionCubit>()
+                .downloadAsTxt(notes)
+                .then((path) =>
+                    context.showSnackBar(AppStrings.saved + "\n" + path))
+                .catchError((e) => context.showSnackBar(e.toString())),
           ),
           AppDialogItem(
             text: saveAsPdf,
             icon: Icons.download_sharp,
-            onClick: () => context.bloc<ActionCubit>().downloadAsPdf(notes),
+            onClick: () => context
+                .bloc<ActionCubit>()
+                .downloadAsPdf(notes)
+                .then((path) =>
+                    context.showSnackBar(AppStrings.saved + "\n" + path))
+                .catchError((e) => context.showSnackBar(e.toString())),
           ),
         ]),
       ),

@@ -1,5 +1,5 @@
 import 'package:manguha/data/entities/note.dart';
-import 'package:manguha/domain/use_cases/save_note_use_case.dart';
+import 'package:manguha/domain/use_cases/note/save_note_use_case.dart';
 
 class UnarchiveNoteUseCase {
   final SaveNoteUseCase _saveNoteUseCase;

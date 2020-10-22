@@ -25,7 +25,8 @@ dependencies:
     sdk: flutter
   sqflite:
   path:
-  path_provider: ^0.4.1
+  ext_storage:
+  path_provider: ^1.6.21
   image_picker:
   contextualactionbar: ^2.1.0
   pdf: ^1.11.2

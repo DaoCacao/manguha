@@ -1,22 +1,23 @@
 import 'dart:io';
 
+import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:manguha/data/entities/note.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
 
 class SaveNoteAsPdfUseCase {
-  Future save(List<Note> notes) async {
-    final status = await Permission.storage.request();
-    if (status.isGranted)
-      notes.forEach(_save);
-    else
-      throw Exception("Not granted");
+  Future<List<File>> save(List<Note> notes) async {
+    return Permission.storage.request().then((status) {
+      if (status.isGranted) {
+        return Future.wait(notes.map(_save));
+      } else
+        throw Exception("Permission not granted");
+    });
   }
 
-  Future _save(Note note) {
+  Future<File> _save(Note note) {
     return _createDocument(note)
         .then((document) => _saveToDevice(note.title, document));
   }
@@ -42,9 +43,9 @@ class SaveNoteAsPdfUseCase {
       );
   }
 
-  Future _saveToDevice(String name, pw.Document document) {
-    return getExternalStorageDirectory()
-        .then((dir) => dir.path)
+  Future<File> _saveToDevice(String name, pw.Document document) {
+    if (name.isEmpty) name = DateTime.now().toString();
+    return ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOCUMENTS)
         .then((path) => join(path, "$name.pdf"))
         .then((path) => File(path))
         .then((file) => file.writeAsBytes(document.save()));

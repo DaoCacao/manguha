@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:manguha/domain/use_cases/get_archived_notes_by_query_use_case.dart';
-import 'package:manguha/domain/use_cases/get_archived_notes_use_case.dart';
-import 'package:manguha/domain/use_cases/save_note_use_case.dart';
-import 'package:manguha/domain/use_cases/search_use_case.dart';
+import 'package:manguha/domain/use_cases/notes/get_archived_notes_by_query_use_case.dart';
+import 'package:manguha/domain/use_cases/notes/get_archived_notes_use_case.dart';
+import 'package:manguha/domain/use_cases/note/save_note_use_case.dart';
+import 'package:manguha/domain/use_cases/search/search_use_case.dart';
 
 import 'archived_notes_events.dart';
 import 'archived_notes_states.dart';

@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:manguha/data/entities/note.dart';
-import 'package:manguha/domain/use_cases/copy_note_use_case.dart';
-import 'package:manguha/domain/use_cases/get_note_use_case.dart';
-import 'package:manguha/domain/use_cases/load_camera_image_use_case.dart';
-import 'package:manguha/domain/use_cases/load_gallery_image_use_case.dart';
-import 'package:manguha/domain/use_cases/save_note_use_case.dart';
+import 'package:manguha/domain/use_cases/note/copy_note_use_case.dart';
+import 'package:manguha/domain/use_cases/note/get_note_use_case.dart';
+import 'package:manguha/domain/use_cases/load_image/load_camera_image_use_case.dart';
+import 'package:manguha/domain/use_cases/load_image/load_gallery_image_use_case.dart';
+import 'package:manguha/domain/use_cases/note/save_note_use_case.dart';
 
 import 'note_events.dart';
 import 'note_states.dart';

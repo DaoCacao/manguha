@@ -5,6 +5,7 @@ import 'package:manguha/data/entities/note.dart';
 import 'package:manguha/domain/blocs/note/note_bloc.dart';
 import 'package:manguha/domain/blocs/note/note_events.dart';
 import 'package:manguha/domain/blocs/note/note_states.dart';
+import 'package:manguha/presentation/context_ext.dart';
 import 'package:manguha/presentation/res/colors.dart';
 import 'package:manguha/presentation/res/strings.dart';
 import 'package:manguha/presentation/widgets/bottom_sheet/bottom_sheet_more.dart';
@@ -25,6 +26,7 @@ class DetailsPage extends StatelessWidget {
   DetailsPage._(this._id);
 
   DetailsPage.open(DetailsPageArgs args) : this._(args.noteId);
+
   DetailsPage.open2(int noteId) : this._(noteId);
 
   DetailsPage.create() : this._(null);
@@ -43,8 +45,8 @@ class DetailsPage extends StatelessWidget {
               current is ImageAddedError || current is NoteCopied,
           listener: (context, state) {
             if (state is ImageAddedError)
-              showSnackbar(context, AppStrings.addImageError);
-            if (state is NoteCopied) showSnackbar(context, AppStrings.copied);
+              context.showSnackBar(AppStrings.addImageError);
+            if (state is NoteCopied) context.showSnackBar(AppStrings.copied);
           },
           buildWhen: (previous, current) =>
               current is NoteLoading || current is NoteLoaded,
@@ -162,19 +164,6 @@ class DetailsPage extends StatelessWidget {
           child: ContentField(content: note.content),
         ),
       ],
-    );
-  }
-
-  void showSnackbar(BuildContext context, String text) {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 0),
-        margin: EdgeInsets.symmetric(horizontal: 40, vertical: 8),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        content: Text(text, textAlign: TextAlign.center),
-      ),
     );
   }
 }

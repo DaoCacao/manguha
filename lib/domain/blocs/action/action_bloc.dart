@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manguha/data/entities/note.dart';
-import 'package:manguha/domain/use_cases/archive_note_use_case.dart';
-import 'package:manguha/domain/use_cases/delete_note_use_case.dart';
-import 'package:manguha/domain/use_cases/move_note_to_trash_use_case.dart';
-import 'package:manguha/domain/use_cases/pin_note_use_case.dart';
-import 'package:manguha/domain/use_cases/restore_note_from_trash_use_case.dart';
-import 'package:manguha/domain/use_cases/save_note_as_pdf_use_case.dart';
-import 'package:manguha/domain/use_cases/save_note_as_txt_use_case.dart';
-import 'package:manguha/domain/use_cases/unarchive_note_use_case.dart';
-import 'package:manguha/domain/use_cases/unpin_note_use_case.dart';
+import 'package:manguha/domain/use_cases/note/archive_note_use_case.dart';
+import 'package:manguha/domain/use_cases/note/delete_note_use_case.dart';
+import 'package:manguha/domain/use_cases/note/move_note_to_trash_use_case.dart';
+import 'package:manguha/domain/use_cases/note/pin_note_use_case.dart';
+import 'package:manguha/domain/use_cases/note/restore_note_from_trash_use_case.dart';
+import 'package:manguha/domain/use_cases/note/unarchive_note_use_case.dart';
+import 'package:manguha/domain/use_cases/note/unpin_note_use_case.dart';
+import 'package:manguha/domain/use_cases/save_local/save_note_as_pdf_use_case.dart';
+import 'package:manguha/domain/use_cases/save_local/save_note_as_txt_use_case.dart';
 
 import 'action_state.dart';
 
@@ -71,14 +71,18 @@ class ActionCubit extends Cubit<ActionState> {
     _unarchiveNoteUseCase.unarchive(notes);
   }
 
-  void downloadAsTxt(List<Note> notes) {
+  Future<String> downloadAsTxt(List<Note> notes) {
     emit(ActionState.Default);
-    _saveAsTxtUseCase.save(notes);
+    return _saveAsTxtUseCase
+        .save(notes)
+        .then((files) => files.first.parent.path);
   }
 
-  void downloadAsPdf(List<Note> notes) {
+  Future downloadAsPdf(List<Note> notes) {
     emit(ActionState.Default);
-    _saveAsPdfUseCase.save(notes);
+    return _saveAsPdfUseCase
+        .save(notes)
+        .then((files) => files.first.parent.path);
   }
 
   void delete(List<Note> notes) {

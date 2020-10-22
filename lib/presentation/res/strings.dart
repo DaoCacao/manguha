@@ -41,9 +41,12 @@ class AppStrings {
   static const copy = "Копировать текст";
   static const copied = "Скопировано в буфер обмена";
 
-  //Dialog
+  //Save external
   static const saveToDevice = "Сохранить на устройство";
   static const saveAs = "Сохранить в формате";
+  static const saved = "Сохранено";
+
+  //Delete
   static const deleteForever = "Удалить навсегда?";
   static const delete = "Удалить";
   static const cancel = "Отменить";

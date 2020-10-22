@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:manguha/domain/use_cases/get_all_notes_by_query_use_case.dart';
-import 'package:manguha/domain/use_cases/get_all_notes_use_case.dart';
-import 'package:manguha/domain/use_cases/save_note_use_case.dart';
-import 'package:manguha/domain/use_cases/search_use_case.dart';
+import 'package:manguha/domain/use_cases/notes/get_all_notes_by_query_use_case.dart';
+import 'package:manguha/domain/use_cases/notes/get_all_notes_use_case.dart';
+import 'package:manguha/domain/use_cases/note/save_note_use_case.dart';
+import 'package:manguha/domain/use_cases/search/search_use_case.dart';
 
 import 'all_notes_events.dart';
 import 'all_notes_states.dart';

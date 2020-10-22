@@ -1,17 +1,17 @@
 import 'package:manguha/data/entities/note.dart';
-import 'package:manguha/domain/use_cases/save_note_use_case.dart';
+import 'package:manguha/domain/use_cases/note/save_note_use_case.dart';
 
-class UnpinNoteUseCase {
+class MoveNoteToTrashUseCase {
   final SaveNoteUseCase _saveNoteUseCase;
 
-  UnpinNoteUseCase(this._saveNoteUseCase);
+  MoveNoteToTrashUseCase(this._saveNoteUseCase);
 
-  Future unpin(List<Note> notes) async {
+  Future moveToTrash(List<Note> notes) async {
     notes.forEach((note) {
       note
         ..isPinned = false
         ..isArchived = false
-        ..isDeleted = false
+        ..isDeleted = true
         ..lastUpdate = DateTime.now();
     });
     _saveNoteUseCase.save(notes);
