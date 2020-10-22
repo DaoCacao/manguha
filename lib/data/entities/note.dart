@@ -48,9 +48,9 @@ class Note {
       ID: id,
       TITLE: title,
       CONTENT: content,
-      IS_PINNED: isPinned,
-      IS_DELETED: isDeleted,
-      IS_ARCHIVED: isArchived,
+      IS_PINNED: isPinned ? 1 : 0,
+      IS_DELETED: isDeleted ? 1 : 0,
+      IS_ARCHIVED: isArchived ? 1 : 0,
       IMAGE: image,
       LAST_UPDATE: lastUpdate.millisecondsSinceEpoch,
     };
