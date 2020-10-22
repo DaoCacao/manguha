@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -152,7 +154,7 @@ class DetailsPage extends StatelessWidget {
       children: [
         BlocBuilder<NoteBloc, NoteState>(
           buildWhen: (previous, current) => current is ImageChanged,
-          builder: (context, state) => Image.memory(note.image),
+          builder: (context, state) => Image.file(File(note.image)),
         ),
         SizedBox(height: 16),
         Padding(

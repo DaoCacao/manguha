@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -91,18 +92,18 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   }
 
   Stream<NoteState> mapAddImage(AddNoteImage event) async* {
-    var bytes;
+    File file;
     if (event.source == ImageSource.gallery) {
-      bytes = await _loadGalleryImageUseCase.load();
+      file = await _loadGalleryImageUseCase.load();
     } else {
-      bytes = await _loadCameraImageUseCase.load();
+      file = await _loadCameraImageUseCase.load();
     }
 
-    if (bytes == null) {
+    if (file == null) {
       yield ImageAddedError();
     } else {
       note
-        ..image = bytes
+        ..image = file.path
         ..lastUpdate = DateTime.now();
       isEdited = true;
       yield ImageChanged(note.image);
@@ -111,7 +112,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
 
   Stream<NoteState> mapDeleteImage(DeleteNoteImage event) async* {
     note
-      ..image = Uint8List(0)
+      ..image = ""
       ..lastUpdate = DateTime.now();
     isEdited = true;
     yield ImageChanged(note.image);

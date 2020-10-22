@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+
 
 class Note {
   static const TABLE_NAME = "notes";
@@ -17,7 +17,7 @@ class Note {
   bool isPinned;
   bool isDeleted;
   bool isArchived;
-  Uint8List image;
+  String image;
   DateTime lastUpdate;
 
   Note._(
@@ -39,7 +39,7 @@ class Note {
           false,
           false,
           false,
-          Uint8List(0),
+          "",
           DateTime.now(),
         );
 
@@ -64,7 +64,7 @@ class Note {
       map[IS_PINNED] as int == 1,
       map[IS_DELETED] as int == 1,
       map[IS_ARCHIVED] as int == 1,
-      map[IMAGE] as Uint8List,
+      map[IMAGE] as String,
       DateTime.fromMillisecondsSinceEpoch(map[LAST_UPDATE]),
     );
   }

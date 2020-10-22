@@ -20,7 +20,7 @@ class NoteDatabase {
           "${Note.IS_PINNED} BOOLEAN, "
           "${Note.IS_DELETED} BOOLEAN, "
           "${Note.IS_ARCHIVED} BOOLEAN, "
-          "${Note.IMAGE} BLOB, "
+          "${Note.IMAGE} TEXT, "
           "${Note.LAST_UPDATE} INTEGER)",
         );
       },
